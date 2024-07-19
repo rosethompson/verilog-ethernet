@@ -130,6 +130,8 @@ mii_phy_if_inst (
     .phy_mii_tx_er(mii_tx_er)
 );
 
+  // *** there a bunch of missing pins
+  /* verilator lint_off PINMISSING */
 eth_mac_1g #(
     .ENABLE_PADDING(ENABLE_PADDING),
     .MIN_FRAME_LENGTH(MIN_FRAME_LENGTH)
@@ -167,6 +169,7 @@ eth_mac_1g_inst (
     .cfg_tx_enable(cfg_tx_enable),
     .cfg_rx_enable(cfg_rx_enable)
 );
+/* verilator lint_on PINMISSING */
 
 endmodule
 

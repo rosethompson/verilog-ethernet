@@ -192,6 +192,8 @@ always @(posedge logic_clk or posedge logic_rst) begin
     end
 end
 
+  // *** there are a bunch of missing pins
+  /* verilator lint_off PINMISSING */
 eth_mac_mii #(
     .TARGET(TARGET),
     .CLOCK_INPUT_STYLE(CLOCK_INPUT_STYLE),
@@ -330,6 +332,7 @@ rx_fifo (
     .m_status_bad_frame(rx_fifo_bad_frame),
     .m_status_good_frame(rx_fifo_good_frame)
 );
+/* verilator lint_on PINMISSING */
 
 endmodule
 
