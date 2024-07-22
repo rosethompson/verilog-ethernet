@@ -192,8 +192,6 @@ always @(posedge logic_clk or posedge logic_rst) begin
     end
 end
 
-  // *** there are a bunch of missing pins
-  /* verilator lint_off PINMISSING */
 eth_mac_mii #(
     .TARGET(TARGET),
     .CLOCK_INPUT_STYLE(CLOCK_INPUT_STYLE),
@@ -228,7 +226,9 @@ eth_mac_1g_mii_inst (
     .rx_error_bad_fcs(rx_error_bad_fcs_int),
     .cfg_ifg(cfg_ifg),
     .cfg_tx_enable(cfg_tx_enable),
-    .cfg_rx_enable(cfg_rx_enable)
+    .cfg_rx_enable(cfg_rx_enable),
+    .rx_start_packet(),
+    .tx_start_packet()
 );
 
 axis_async_fifo_adapter #(
@@ -279,7 +279,16 @@ tx_fifo (
     .s_status_good_frame(tx_fifo_good_frame),
     .m_status_overflow(),
     .m_status_bad_frame(),
-    .m_status_good_frame()
+    .m_status_good_frame(),
+    
+    .m_status_depth(),
+    .m_status_depth_commit(),
+    .s_status_depth(),
+    .s_status_depth_commit(),
+    .m_pause_req('0),
+    .m_pause_ack(),
+    .s_pause_req('0),
+    .s_pause_ack()
 );
 
 axis_async_fifo_adapter #(
@@ -330,9 +339,17 @@ rx_fifo (
     .s_status_good_frame(),
     .m_status_overflow(rx_fifo_overflow),
     .m_status_bad_frame(rx_fifo_bad_frame),
-    .m_status_good_frame(rx_fifo_good_frame)
+    .m_status_good_frame(rx_fifo_good_frame),
+
+    .m_status_depth(),
+    .m_status_depth_commit(),
+    .s_status_depth(),
+    .s_status_depth_commit(),
+    .m_pause_req('0),
+    .m_pause_ack(),
+    .s_pause_req('0),
+    .s_pause_ack()
 );
-/* verilator lint_on PINMISSING */
 
 endmodule
 

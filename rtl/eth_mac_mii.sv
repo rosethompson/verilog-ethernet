@@ -130,8 +130,6 @@ mii_phy_if_inst (
     .phy_mii_tx_er(mii_tx_er)
 );
 
-  // *** there a bunch of missing pins
-  /* verilator lint_off PINMISSING */
 eth_mac_1g #(
     .ENABLE_PADDING(ENABLE_PADDING),
     .MIN_FRAME_LENGTH(MIN_FRAME_LENGTH)
@@ -167,9 +165,77 @@ eth_mac_1g_inst (
     .rx_error_bad_fcs(rx_error_bad_fcs),
     .cfg_ifg(cfg_ifg),
     .cfg_tx_enable(cfg_tx_enable),
-    .cfg_rx_enable(cfg_rx_enable)
+    .cfg_rx_enable(cfg_rx_enable),
+
+    // missing pins
+    .cfg_rx_pfc_en('0),
+    .cfg_rx_pfc_opcode('0),
+    .cfg_rx_lfc_en('0),
+    .cfg_rx_lfc_opcode('0),
+    .cfg_tx_pfc_refresh('0),
+    .cfg_tx_pfc_quanta('0),
+    .cfg_tx_pfc_en('0),
+    .cfg_tx_pfc_opcode('0),
+    .cfg_tx_pfc_eth_type('0),
+    .cfg_tx_pfc_eth_src('0),
+    .cfg_tx_pfc_eth_dst('0),
+    .cfg_tx_lfc_refresh('0),
+    .cfg_tx_lfc_quanta('0),
+    .cfg_tx_lfc_en('0),
+    .cfg_tx_lfc_opcode('0),
+    .cfg_tx_lfc_eth_type('0),
+    .cfg_tx_lfc_eth_src('0),
+    .cfg_tx_lfc_eth_dst('0),
+    .cfg_mcf_rx_enable('0),
+    .cfg_mcf_rx_forward('0),
+    .cfg_mcf_rx_check_opcode_pfc('0),
+    .cfg_mcf_rx_opcode_pfc('0),
+    .cfg_mcf_rx_check_opcode_lfc('0),
+    .cfg_mcf_rx_opcode_lfc('0),
+    .cfg_mcf_rx_eth_type('0),
+    .cfg_mcf_rx_check_eth_src('0),
+    .cfg_mcf_rx_eth_src('0),
+    .cfg_mcf_rx_check_eth_dst_ucast('0),
+    .cfg_mcf_rx_eth_dst_ucast('0),
+    .cfg_mcf_rx_check_eth_dst_mcast('0),
+    .cfg_mcf_rx_eth_dst_mcast('0),
+    .stat_rx_pfc_paused(),
+    .stat_rx_pfc_xoff(),
+    .stat_rx_pfc_xon(),
+    .stat_rx_pfc_pkt(),
+    .stat_rx_lfc_paused(),
+    .stat_rx_lfc_xoff(),
+    .stat_rx_lfc_xon(),
+    .stat_rx_lfc_pkt(),
+    .stat_tx_pfc_paused(),
+    .stat_tx_pfc_xoff(),
+    .stat_tx_pfc_xon(),
+    .stat_tx_pfc_pkt(),
+    .stat_tx_lfc_paused(),
+    .stat_tx_lfc_xoff(),
+    .stat_tx_lfc_xon(),
+    .stat_tx_lfc_pkt(),
+    .stat_rx_mcf(),
+    .stat_tx_mcf(),
+    .tx_lfc_pause_en('0),
+    .tx_pause_req('0),
+    .tx_pause_ack(),
+    .rx_pfc_en('0),
+    .rx_pfc_ack('0),
+    .rx_pfc_req(), 
+    .tx_pfc_req('0),
+    .tx_pfc_resend('0),
+    .rx_lfc_ack('0),
+    .rx_lfc_req(),
+    .rx_lfc_en('0),
+    .tx_lfc_resend('0),
+    .tx_lfc_req('0),
+    .tx_axis_ptp_ts(),
+    .tx_axis_ptp_ts_tag(),
+    .tx_axis_ptp_ts_valid(),
+    .tx_ptp_ts('0),
+    .rx_ptp_ts('0)
 );
-/* verilator lint_on PINMISSING */
 
 endmodule
 
