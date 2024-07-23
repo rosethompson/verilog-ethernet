@@ -37,7 +37,7 @@ module lfsr #
     // LFSR polynomial
     parameter LFSR_POLY = 31'h10000001,
     // LFSR configuration: "GALOIS", "FIBONACCI"
-    parameter LFSR_CONFIG = "FIBONACCI",
+    parameter string LFSR_CONFIG = "FIBONACCI",
     // LFSR feed forward enable
     parameter LFSR_FEED_FORWARD = 0,
     // bit-reverse input and output
@@ -240,7 +240,7 @@ function [LFSR_WIDTH+DATA_WIDTH-1:0] lfsr_mask(input [31:0] index);
 
                 // add XOR inputs from correct indicies
                 for (j = 1; j < LFSR_WIDTH; j = j + 1) begin
-                    if ((LFSR_POLY >> j) & 1) begin
+                    if (|((LFSR_POLY >> j) & 1)) begin
                         state_val = lfsr_mask_state[j-1] ^ state_val;
                         data_val = lfsr_mask_data[j-1] ^ data_val;
                     end
@@ -295,7 +295,7 @@ function [LFSR_WIDTH+DATA_WIDTH-1:0] lfsr_mask(input [31:0] index);
 
                 // add XOR inputs at correct indicies
                 for (j = 1; j < LFSR_WIDTH; j = j + 1) begin
-                    if ((LFSR_POLY >> j) & 1) begin
+                    if (|((LFSR_POLY >> j) & 1)) begin
                         lfsr_mask_state[j] = lfsr_mask_state[j] ^ state_val;
                         lfsr_mask_data[j] = lfsr_mask_data[j] ^ data_val;
                     end
@@ -348,7 +348,9 @@ endfunction
 
 `ifdef SIMULATION
 // "AUTO" style is "REDUCTION" for faster simulation
+/* verilator lint_off WIDTHEXPAND */
 parameter STYLE_INT = (STYLE == "AUTO") ? "REDUCTION" : STYLE;
+/* verilator lint_on WIDTHEXPAND */
 `else
 // "AUTO" style is "LOOP" for better synthesis result
 parameter STYLE_INT = (STYLE == "AUTO") ? "LOOP" : STYLE;
