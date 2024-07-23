@@ -89,7 +89,8 @@ module axis_gmii_tx #
     output wire                      error_underflow
 );
 
-parameter MIN_LEN_WIDTH = $clog2(MIN_FRAME_LENGTH-4-1+1);
+parameter MIN_FRAME_LENGTH_2 = MIN_FRAME_LENGTH-4-1;
+parameter MIN_LEN_WIDTH = $clog2(MIN_FRAME_LENGTH_2+1);
 
 // bus width assertions
 initial begin
@@ -199,10 +200,12 @@ always @* begin
     if (start_packet_reg && PTP_TS_ENABLE) begin
         m_axis_ptp_ts_next = ptp_ts;
         if (PTP_TS_CTRL_IN_TUSER) begin
-            m_axis_ptp_ts_tag_next = s_axis_tuser >> 2;
+            m_axis_ptp_ts_tag_next = {{{PTP_TAG_WIDTH-USER_WIDTH}{1'b0}}, s_axis_tuser >> 2};
+            /* verilator lint_off SELRANGE */
             m_axis_ptp_ts_valid_next = s_axis_tuser[1];
+            /* verilator lint_on SELRANGE */
         end else begin
-            m_axis_ptp_ts_tag_next = s_axis_tuser >> 1;
+            m_axis_ptp_ts_tag_next = {{{PTP_TAG_WIDTH-USER_WIDTH}{1'b0}}, s_axis_tuser >> 1};
             m_axis_ptp_ts_valid_next = 1'b1;
         end
     end
@@ -246,7 +249,7 @@ always @* begin
                 frame_ptr_next = 1;
 
                 frame_error_next = 1'b0;
-                frame_min_count_next = MIN_FRAME_LENGTH-4-1;
+                frame_min_count_next = MIN_FRAME_LENGTH_2[MIN_LEN_WIDTH-1:0];
 
                 if (s_axis_tvalid && cfg_tx_enable) begin
                     mii_odd_next = 1'b1;
@@ -297,7 +300,7 @@ always @* begin
 
                 mii_odd_next = 1'b1;
 
-                if (frame_min_count_reg) begin
+                if (|frame_min_count_reg) begin
                     frame_min_count_next = frame_min_count_reg - 1;
                 end
 
@@ -327,7 +330,7 @@ always @* begin
                 gmii_txd_next = s_tdata_reg;
                 gmii_tx_en_next = 1'b1;
 
-                if (ENABLE_PADDING && frame_min_count_reg) begin
+                if (ENABLE_PADDING & (|frame_min_count_reg)) begin
                     frame_min_count_next = frame_min_count_reg - 1;
                     s_tdata_next = 8'd0;
                     state_next = STATE_PAD;
@@ -348,7 +351,7 @@ always @* begin
 
                 s_tdata_next = 8'd0;
 
-                if (frame_min_count_reg) begin
+                if (|frame_min_count_reg) begin
                     frame_min_count_next = frame_min_count_reg - 1;
                     state_next = STATE_PAD;
                 end else begin
@@ -363,11 +366,12 @@ always @* begin
                 mii_odd_next = 1'b1;
                 frame_ptr_next = frame_ptr_reg + 1;
 
-                case (frame_ptr_reg)
+                case (frame_ptr_reg[1:0])
                     2'd0: gmii_txd_next = ~crc_state[7:0];
                     2'd1: gmii_txd_next = ~crc_state[15:8];
                     2'd2: gmii_txd_next = ~crc_state[23:16];
                     2'd3: gmii_txd_next = ~crc_state[31:24];
+                    default: gmii_txd_next = ~crc_state[7:0];
                 endcase
                 gmii_tx_en_next = 1'b1;
                 gmii_tx_er_next = frame_error_reg;
@@ -392,6 +396,7 @@ always @* begin
                     state_next = STATE_IDLE;
                 end
             end
+            default: state_next = STATE_IDLE;
         endcase
 
         if (mii_select) begin
