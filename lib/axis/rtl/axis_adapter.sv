@@ -175,7 +175,7 @@ end else if (M_BYTE_LANES > S_BYTE_LANES) begin : upsize
 
             if (seg_reg == 0) begin
                 m_axis_tdata_reg[seg_reg*SEG_DATA_WIDTH +: SEG_DATA_WIDTH] <= s_axis_tvalid_reg ? s_axis_tdata_reg : s_axis_tdata;
-                m_axis_tkeep_reg <= s_axis_tvalid_reg ? s_axis_tkeep_reg : s_axis_tkeep;
+                m_axis_tkeep_reg <= s_axis_tvalid_reg ? {{{M_KEEP_WIDTH-S_KEEP_WIDTH}{1'b0}}, s_axis_tkeep_reg} : {{{M_KEEP_WIDTH-S_KEEP_WIDTH}{1'b0}}, s_axis_tkeep};
             end else begin
                 m_axis_tdata_reg[seg_reg*SEG_DATA_WIDTH +: SEG_DATA_WIDTH] <= s_axis_tdata;
                 m_axis_tkeep_reg[seg_reg*SEG_KEEP_WIDTH +: SEG_KEEP_WIDTH] <= s_axis_tkeep;
