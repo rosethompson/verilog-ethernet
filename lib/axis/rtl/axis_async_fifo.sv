@@ -40,7 +40,7 @@ module axis_async_fifo #
     parameter DATA_WIDTH = 8,
     // Propagate tkeep signal
     // If disabled, tkeep assumed to be 1'b1
-    parameter KEEP_ENABLE = (DATA_WIDTH>8),
+    parameter logic KEEP_ENABLE = (DATA_WIDTH>8),
     // tkeep signal width (words per cycle)
     parameter KEEP_WIDTH = ((DATA_WIDTH+7)/8),
     // Propagate tlast signal
@@ -140,9 +140,9 @@ module axis_async_fifo #
     output wire                   m_status_bad_frame,
     output wire                   m_status_good_frame
 );
-
+/* verilator lint_off WIDTHTRUNC */
 parameter ADDR_WIDTH = (KEEP_ENABLE && KEEP_WIDTH > 1) ? $clog2(DEPTH/KEEP_WIDTH) : $clog2(DEPTH);
-
+/* verilator lint_on WIDTHTRUNC */
 parameter OUTPUT_FIFO_ADDR_WIDTH = RAM_PIPELINE < 2 ? 3 : $clog2(RAM_PIPELINE*2+7);
 
 // check configuration
@@ -184,7 +184,9 @@ initial begin
 end
 
 localparam KEEP_OFFSET = DATA_WIDTH;
+/* verilator lint_off WIDTHTRUNC */
 localparam LAST_OFFSET = KEEP_OFFSET + (KEEP_ENABLE ? KEEP_WIDTH : 0);
+/* verilator lint_on WIDTHTRUNC */
 localparam ID_OFFSET   = LAST_OFFSET + (LAST_ENABLE ? 1          : 0);
 localparam DEST_OFFSET = ID_OFFSET   + (ID_ENABLE   ? ID_WIDTH   : 0);
 localparam USER_OFFSET = DEST_OFFSET + (DEST_ENABLE ? DEST_WIDTH : 0);
