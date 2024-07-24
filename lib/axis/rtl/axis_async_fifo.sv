@@ -343,14 +343,22 @@ wire [USER_WIDTH-1:0]  m_axis_tuser_out;
 
 wire pipe_ready;
 
-assign s_status_depth = (KEEP_ENABLE && KEEP_WIDTH > 1) ? {s_depth_reg, {$clog2(KEEP_WIDTH){1'b0}}} : s_depth_reg;
-assign s_status_depth_commit = (KEEP_ENABLE && KEEP_WIDTH > 1) ? {s_depth_commit_reg, {$clog2(KEEP_WIDTH){1'b0}}} : s_depth_commit_reg;
+  if(KEEP_ENABLE && KEEP_WIDTH > 1) begin 
+    assign s_status_depth = {s_depth_reg, {$clog2(KEEP_WIDTH){1'b0}}};
+    assign s_status_depth_commit = {s_depth_commit_reg, {$clog2(KEEP_WIDTH){1'b0}}};
+    assign m_status_depth = {m_depth_reg, {$clog2(KEEP_WIDTH){1'b0}}};
+    assign m_status_depth_commit = {m_depth_commit_reg, {$clog2(KEEP_WIDTH){1'b0}}};
+  end else begin
+    assign s_status_depth = s_depth_reg;
+    assign s_status_depth_commit = s_depth_commit_reg;
+    assign m_status_depth = m_depth_reg;
+    assign m_status_depth_commit = m_depth_commit_reg;
+  end
+
 assign s_status_overflow = overflow_reg;
 assign s_status_bad_frame = bad_frame_reg;
 assign s_status_good_frame = good_frame_reg;
 
-assign m_status_depth = (KEEP_ENABLE && KEEP_WIDTH > 1) ? {m_depth_reg, {$clog2(KEEP_WIDTH){1'b0}}} : m_depth_reg;
-assign m_status_depth_commit = (KEEP_ENABLE && KEEP_WIDTH > 1) ? {m_depth_commit_reg, {$clog2(KEEP_WIDTH){1'b0}}} : m_depth_commit_reg;
 assign m_status_overflow = overflow_sync3_reg ^ overflow_sync4_reg;
 assign m_status_bad_frame = bad_frame_sync3_reg ^ bad_frame_sync4_reg;
 assign m_status_good_frame = good_frame_sync3_reg ^ good_frame_sync4_reg;
