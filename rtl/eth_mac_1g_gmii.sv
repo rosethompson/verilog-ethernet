@@ -316,7 +316,6 @@ eth_mac_1g_inst (
     .cfg_rx_lfc_opcode('0),
     .cfg_rx_lfc_en('0),
     .cfg_rx_pfc_opcode('0),
-    .cfg_rx_pfc_opcode('0),
     .cfg_rx_pfc_en('0)
 );
 
